@@ -1,0 +1,41 @@
+.table-container {
+    position: relative;
+  }
+  
+  .table-scroll {
+    max-height: 50vh; /* Set the maximum height to enable scrolling */
+    overflow-y: auto; /* Add vertical scroll if content exceeds container height */
+  }
+  
+  .striped-table {
+    width: 100%;
+    border: "none";
+    border-collapse: collapse;
+    /* Add other necessary styles */
+  }
+  
+  .striped-table th,
+  .striped-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Add bottom border for cells */
+  }
+  
+  .striped-table-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    /* Additional styles for the fixed header */
+  }
+  
+  .striped-table tbody tr:nth-child(even) {
+    background-color: rgb(245,245,245); /* Alternate row background color */
+  }
+  
+  .striped-table tbody tr:hover {
+    background-color: rgb(235,245,255); /* Change the background color on hover */
+  }
+  
+  thead {
+    font-weight: bold;
+  }
