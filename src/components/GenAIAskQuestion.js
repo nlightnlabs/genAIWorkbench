@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { askGPT } from './apis/axios'
-import {appIcons} from './apis/icons.js'
+import {appIcons, generalIcons} from './apis/icons.js'
+import Spinner from './Spinner.js'
 
 const GenAIAskQuestion = () => {
   const [prompt, setPrompt] = useState("")
@@ -32,6 +33,10 @@ const handleRefresh=()=>{
     setPrompt("")
 }
 
+const handleSave=()=>{
+    alert("Chat saved")
+}
+
 const threadPromptStyle={
     fontSize: "14px",
     backgroundImage: "linear-gradient(180deg, rgb(200,200,255),rgb(100,150,255),rgb(100,150,255)",
@@ -45,15 +50,18 @@ const threadResponseStyle={
 }
 
 const waitingModalStyle={
-   position: "absolute", 
-   height: "200px", 
-   width: "300px", 
-   top: "30vh",
-   left: Number("50vw") - Number(150/2),
-   fontSize: "16px",
-   fontWeight: "bold",
-   zIndex: 10
-}
+    position: "fixed", 
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    height: "300px", 
+    width: "25vw", 
+    top: "30vh",
+    fontSize: "24px",
+    fontWeight: "bold",
+    zIndex: 999,
+    cursor: "grab",
+  }
 
 const buttonIconStyle={
     height: 20,
@@ -62,13 +70,14 @@ const buttonIconStyle={
 }
 
   return (
-    <div className="d-flex w-100 justify-content-around animate__animated animate__fadeIn animate__duration-0.5s">
-        <div className="d-flex flex-column" style={{width: "50%"}}>
+    <div className="d-flex w-100 justify-content-center animate__animated animate__fadeIn animate__duration-0.5s">
+        <div className="d-flex flex-column m-3" style={{ maxHeight: "90%", overflowY:"auto", width: "30%", minWidth: "300px"}}>
             <div className="d-flex flex-column bg-light border border-3 p-3 rounded-3 shadow">
                 <textarea
                     id='prompt'
                     name='prompt'
                     value={prompt}
+                    placeholder="Please enter a detailed question"
                     onChange={(e)=>setPrompt(e.target.value)}
                     style={{fontSize: "16px", color: "rgb(100,150,255", outline: "none", width: "100%", minHeight:"200px"}}
                     className="border rounded-3 p-3"
@@ -87,9 +96,10 @@ const buttonIconStyle={
             }
         </div>
         {thread.length>0 &&
-            <div className="d=flex flex-column rounded-3 w-25 p-3 animate__animated animate__fadeIn animate__duration-0.5s" 
-            style={{backgroundColor:"rgba(255,255,255,0.5", maxHeight: "90%", overflowY:"auto", minWidth: "400px"}}>
-                 <div className="d-flex justify-content-end w-100 mb-3">
+            <div className="d=flex flex-column rounded-3 p-3 m-3 animate__animated animate__fadeIn animate__duration-0.5s" 
+            style={{backgroundColor:"rgba(255,255,255,0.5", maxHeight: "90%", overflowY:"auto", width: "30%", minWidth: "300px"}}>
+                <div className="d-flex justify-content-end w-100 mb-3">
+                    <img src={`${generalIcons}/save_icon.png`} style={buttonIconStyle} onClick={handleSave}></img>
                     <img src={`${appIcons}/trash_icon.png`} style={buttonIconStyle} onClick={handleRefresh}></img>
                 </div>
                 {thread.map((item,index)=>(
@@ -106,11 +116,13 @@ const buttonIconStyle={
             </div>
         }
         
-        {
-            waiting && 
-            <div className="d-flex bg-light shadow p-3 text-center border border-3 rounded-3" style={waitingModalStyle}>
-                ChatGPT is working on a response.  Please wait a few moments...
-            </div>
+
+        {waiting &&
+        <div className="d-flex flex-column justify-content-center bg-light shadow p-3 text-center border border-3 rounded-3" style={waitingModalStyle}>
+            <Spinner/>
+            <div>ChatGPT is working on a response.</div> 
+            <div>Please wait...</div> 
+        </div>
         }
         
     </div>

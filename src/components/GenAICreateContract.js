@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { askGPT } from './apis/axios'
 import {toProperCase} from './functions/formatValue'
 import axios,{getList} from './apis/axios.js'
+import Spinner from './Spinner'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
 
@@ -62,8 +63,8 @@ const prepareFormData = async ()=>{
         {id: 6, section: "counter_party_info", name: "counter_party_representative_name", label: "Name of contract owner at the counter party", list: null, value:"", type:"text"},
         {id: 7, section: "counter_party_info", name: "counter_party_representative_title", label: "Title of contract at the counter party", list: null, value:"", type:"text"},
         {id: 8, section: "my_company_info", name: "my_company_name", label: "Company name to be on contract", list: null, value: userData.company_name,  type:"text"},
-        {id: 9, section: "my_company_info", name: "my_company_representative_name", label: "Contract owner name", list: null, value:userData.full_name, type:"text"},
-        {id: 10, section: "my_company_info", name: "my_company_representative_title", label: "Contract owner title", list: null, value:userData.job_title, type:"text"},
+        {id: 9, section: "my_company_info", name: "my_company_representative_name", label: "Name of contract owner", list: null, value:userData.full_name, type:"text"},
+        {id: 10, section: "my_company_info", name: "my_company_representative_title", label: "Title of the contract owner", list: null, value:userData.job_title, type:"text"},
       ]
       setFormData(form_data)
 
@@ -101,18 +102,19 @@ const prepareFormData = async ()=>{
 
   }
 
-  
-
-const waitingModalStyle={
-  position: "absolute", 
-  height: "200px", 
-  width: "300px", 
-  top: "30vh",
-  left: Number("50vw") - Number(150/2),
-  fontSize: "16px",
-  fontWeight: "bold",
-  zIndex: 10
-}
+  const waitingModalStyle={
+    position: "fixed", 
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    height: "300px", 
+    width: "25vw", 
+    top: "30vh",
+    fontSize: "24px",
+    fontWeight: "bold",
+    zIndex: 999,
+    cursor: "grab",
+  }
 
 const handlePageChange = (e)=>{
   const {name,value} = e.target
@@ -128,15 +130,14 @@ const handleInputChange = (e)=>{
   return (
     <div className="d-flex justify-content-center w-100">
       {/* File Config and Preview */}
-      <div className="d-flex flex-column p-3" style={{width: "60%"}}>
+      <div className="d-flex flex-column p-3" style={{width: "40%", minWidth:500}}>
           <div className="d-flex flex-column bg-light p-3 rounded-3 shadow">
             <h6>Please complete the following information:</h6>
           <form>
             {/* Form Input */}
-            <div className="d-flex justify-content-around" style={{maxHeight: "550px", overflowY:"auto"}}>
-
+            <div className="d-flex flex-column" style={{height: 500, overflowY:"auto"}}>
                 {sections.map((section,index)=>(
-                    <div className="d-flex flex-column p-3" style={{maxHeight: "550px", width: "350px", minWidth:"100px", overflowY:"auto"}}>
+                    <div className="d-flex flex-column p-1">
                         {toProperCase(section.replaceAll("_"," "))}
                     {
                     formData && formData.map((item,index)=>(
@@ -171,21 +172,21 @@ const handleInputChange = (e)=>{
 
        {/* Summary */}
        {response.length>0 && (
-        <div className="d-flex flex-column p-3 w-50 animate__animated animate__fadeIn aniamte__duration-0.5s" style={{width: "75%"}}>
+        <div className="d-flex flex-column p-3 animate__animated animate__fadeIn aniamte__duration-0.5s" style={{width: "60%", minWidth:400, overflowY:"auto"}}>
             <div className="d-flex flex-column p-3 border rounded rounded-3" 
-            style={{maxHeight: "90%", backgroundColor: "rgba(255,255,255,0.75"}}>
+            style={{height: 500, backgroundColor: "rgba(255,255,255,0.75"}}>
                 <h5>Result: </h5>
                 <textarea style={{fontSize:"12px"}} rows={40} className = "form-control"  readonly>{response}</textarea>
             </div>
           </div>
       )}
 
-      {/* Waiting Modal */}
       {
         waiting && 
-        <div className="d-flex position-absolute top-0" style={{height: "100vh", width: "100vw", backgroundColor: "rgba(0,0,0,0.5)"}}></div> &&
-        <div className="d-flex bg-light shadow p-3 text-center border border-3 rounded-3" style={waitingModalStyle}>
-            ChatGPT is working on the summary.  Please wait a few moments...
+        <div className="d-flex flex-column justify-content-center bg-light shadow p-3 text-center border border-3 rounded-3" style={waitingModalStyle}>
+            <Spinner/>
+            <div>ChatGPT is working on a response.</div> 
+            <div>Please wait...</div> 
         </div>
       }
     </div>

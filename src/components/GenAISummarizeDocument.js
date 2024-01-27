@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { askGPT } from './apis/axios'
 import axios from 'axios'
+import Spinner from './Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
 
@@ -98,14 +99,17 @@ const handleSummarize = async(e)=>{
   
 
 const waitingModalStyle={
-  position: "absolute", 
-  height: "200px", 
-  width: "300px", 
+  position: "fixed", 
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  height: "300px", 
+  width: "25%vw", 
   top: "30vh",
-  left: Number("50vw") - Number(150/2),
-  fontSize: "16px",
+  fontSize: "24px",
   fontWeight: "bold",
-  zIndex: 10
+  zIndex: 999,
+  cursor: "grab",
 }
 
 const handlePageChange = (e)=>{
@@ -118,7 +122,7 @@ const handlePageChange = (e)=>{
   return (
     <div className="d-flex justify-content-center w-100">
       {/* File Config and Preview */}
-      <div className="d-flex flex-column p-3" style={{width: "50%"}}>
+      <div className="d-flex flex-column p-3" style={{minWidth: "50%"}}>
           <div className="d-flex flex-column bg-light p-3 rounded-3 shadow">
           <form>
             {/* File Input */}
@@ -134,7 +138,7 @@ const handlePageChange = (e)=>{
                     onChange={handleFileChange} 
                     />
                 </div>
-                <p className="ms-1" style={{fontSize:"14px", color: "red"}}><span style={{fontWeight: "bold", color: "black"}}>Note: </span>Must be a PDF File</p>
+                <p className="ms-1" style={{fontSize:"14px", color: "red"}}><span style={{fontWeight: "bold", color: "black"}}>Note: </span>Must be a PDF (Non Image Scan) File</p>
               </div>
             </div>
 
@@ -195,13 +199,13 @@ const handlePageChange = (e)=>{
           </div>
       )}
 
-      {/* Waiting Modal */}
-      {
-        waiting && 
-        <div className="d-flex bg-light shadow p-3 text-center border border-3 rounded-3" style={waitingModalStyle}>
-            ChatGPT is working on the summary.  Please wait a few moments...
+      {waiting &&
+        <div className="d-flex flex-column justify-content-center bg-light shadow p-3 text-center border border-3 rounded-3" style={waitingModalStyle}>
+            <Spinner/>
+            <div>ChatGPT is working on a response.</div> 
+            <div>Please wait...</div> 
         </div>
-      }
+        }
     </div>
   );
 };

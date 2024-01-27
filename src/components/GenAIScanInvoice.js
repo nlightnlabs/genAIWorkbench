@@ -3,6 +3,8 @@ import { scanInvoice } from './apis/axios'
 import {toProperCase} from './functions/formatValue'
 import { Document, Page, pdfjs } from 'react-pdf';
 import MultiInput from './MultiInput';
+import Spinner from './Spinner';
+import { generalIcons, appIcons } from './apis/icons';
 import NewRecordForm from './NewRecordForm';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -100,20 +102,35 @@ const GenAIScanInvoice = (props) => {
         setFormData({...formData,...{[name]:value}})
       }
 
-    const handleSaveInvoice = ()=>{
+      const handleRefresh=()=>{
+        setFormData(null)
+        setResponse("")
+    }
+    
+    const handleSave=()=>{
+        alert("Chat saved")
         console.log(formData)
     }
 
-      const waitingModalStyle={
-        position: "absolute", 
-        height: "200px", 
-        width: "300px", 
-        top: "30vh",
-        left: Number("50vw") - Number(150/2),
-        fontSize: "16px",
-        fontWeight: "bold",
-        zIndex: 10
-      }
+    const waitingModalStyle={
+      position: "fixed", 
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      height: "300px", 
+      width: "25%vw", 
+      top: "30vh",
+      fontSize: "24px",
+      fontWeight: "bold",
+      zIndex: 999,
+      cursor: "grab",
+    }
+
+    const buttonIconStyle={
+      height: 20,
+      width: 20,
+      cursor: "pointer"
+  }
 
 
   return (
@@ -135,7 +152,7 @@ const GenAIScanInvoice = (props) => {
                     onChange={handleFileChange} 
                     />
                 </div>
-                <p className="ms-1" style={{fontSize:"14px", color: "red"}}><span style={{fontWeight: "bold", color: "black"}}>Note: </span>Must be a PDF File</p>
+                <p className="ms-1" style={{fontSize:"14px", color: "red"}}><span style={{fontWeight: "bold", color: "black"}}>Note: </span>Must be a PDF (Non Image Scan) File</p>
               </div>
             </div>
 
@@ -175,6 +192,10 @@ const GenAIScanInvoice = (props) => {
             <div className="d-flex flex-column p-3 border rounded rounded-3"
             style={{maxHeight: "90%", backgroundColor: "rgba(255,255,255,0.75"}}>
                 <h5>Review and Edit Scanned Details: </h5>
+                <div className="d-flex justify-content-end w-100 mb-3">
+                    <img src={`${generalIcons}/save_icon.png`} style={buttonIconStyle} onClick={handleSave}></img>
+                    <img src={`${appIcons}/trash_icon.png`} style={buttonIconStyle} onClick={handleRefresh}></img>
+                </div>
                 <div className="d-flex flex-column p-3" style={{height: "90%", overflowY:"auto"}}>
                 {Object.entries(formData).map(([key,value])=>(
                     <MultiInput
@@ -193,13 +214,14 @@ const GenAIScanInvoice = (props) => {
           </div>
       )}
 
-      {/* Waiting Modal */}
-      {
-        waiting && 
-        <div className="d-flex bg-light shadow p-3 text-center border border-3 rounded-3" style={waitingModalStyle}>
-            ChatGPT is working on the summary.  Please wait a few moments...
+
+      {waiting &&
+        <div className="d-flex flex-column justify-content-center bg-light shadow p-3 text-center border border-3 rounded-3" style={waitingModalStyle}>
+            <Spinner/>
+            <div>ChatGPT is working on a response.</div> 
+            <div>Please wait...</div> 
         </div>
-      }
+        }
     </div>
   )
 }

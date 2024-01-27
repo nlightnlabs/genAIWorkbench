@@ -7,9 +7,10 @@ import GenAISummarizeDocument from './GenAISummarizeDocument.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 import GenAIScanInvoice from './GenAIScanInvoice.js'
 import GenAICreateContract from './GenAICreateContract.js'
+import GenAICreateSalesPitch from './GenAICreateSalesPitch.js';
 
 
-const Gpt = (props) => {
+const Home = (props) => {
 
     const {user, appData} = useContext(Context)
 
@@ -45,23 +46,24 @@ const Gpt = (props) => {
         <div className="d-flex" style={{width: "100%", height: "100%", overflow:"hidden", backgroundImage:"linear-gradient(180deg, white, rgba(0,200,0,0.25),rgba(0,0,220,0.25), rgba(200,0,220,0.25)"}}>
             <div 
                 className="d-flex flex-column p-3" 
-                style={{width: 250, height: "100%", backgroundColor: "rgba(255,255,255,0.4)"}}
+                style={{width: 250, height: "100%", backgroundColor: "rgba(255,255,255,0.5)"}}
             >
                 <button id="askButton" className="btn btn-outline-success mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Ask Question")}>Ask Question</button>
                 <button id="summarizeDocumentButton" className="btn btn-outline-success mb-3" style={menuButtonStyle}  onClick={(e)=>setTaskType("Summarize Document")}>Summarize Document</button>
                 <button id="generateImageButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Generate Image")}>Generate Image</button>
                 <button id="scanInvoiceButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Scan Invoice")}>Scan Invoice</button>
                 <button id="generateImageButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Contract")}>Create Contract</button>
-                <button id="generateImageButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Analyze Spend")}>Analyze Spend</button>
-                <button id="generateImageButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Budget")}>Prepare Budget</button>
-                <button id="generateImageButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Sourcing Event")}>Prepare Sourcing Event</button>
+                <button id="createSalesPitchButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Create Sales Pitch")}>Create Sales Pitch</button>
+                <button id="analyzeSpendButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Analyze Spend")}>Analyze Spend</button>
+                <button id="prepareBudgetButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Budget")}>Prepare Budget</button>
+                <button id="prepareSourcingEventButton" className="btn btn-outline-success mb-3" style={menuButtonStyle} onClick={(e)=>setTaskType("Prepare Sourcing Event")}>Prepare Sourcing Event</button>
             </div>
             
             <div className="d-flex w-100 flex-column">
 
                 <div className = "d-flex justify-content-center mb-3" style={{fontSize: "24px", fontWeight: "bold"}}>{taskType}</div>
                 
-                <div ref={contentContainerRef} className="d-flex justify-content-center w-100" style={{height: contentContainerHeight, overflowY:"auto"}}>
+                <div ref={contentContainerRef} className="d-flex justify-content-center" style={{height: contentContainerHeight, overflowY:"auto"}}>
                 {
                 taskType=="Ask Question" ?
                     <GenAIAskQuestion/>
@@ -82,7 +84,13 @@ const Gpt = (props) => {
                     <GenAICreateContract 
                         user={appData.user_info}
                         appData={appData}
-                    />   
+                    />
+                :
+                taskType == "Create Sales Pitch"?
+                    <GenAICreateSalesPitch 
+                        user={appData.user_info}
+                        appData={appData}
+                    />  
                 :
                     <div>Comming soon</div>
                 }
@@ -93,4 +101,4 @@ const Gpt = (props) => {
   )
 }
 
-export default Gpt
+export default Home
